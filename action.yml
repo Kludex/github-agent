@@ -1,0 +1,29 @@
+name: "GitHub Agent"
+description: "A GitHub Action that uses the PydanticAI to run actions on a repository."
+author: "Kludex"
+inputs:
+  anthropic_api_key:
+    description: "The API key for the Anthropic API."
+    required: true
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+        version: 0.7.2
+    - name: Install Python 3.12
+      shell: bash
+      run: uv python install 3.12
+    - name: Install packages
+      shell: bash
+      run: uv sync --frozen
+      working-directory: ${{ github.action_path }}
+    - name: Run agent
+      shell: bash
+      run: uv run main.py
+      working-directory: ${{ github.action_path }}
+      env:
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic_api_key }}
