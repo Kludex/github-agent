@@ -22,6 +22,7 @@ You can:
 
 
 async def main():
+    return
     result = await agent.run()
     print(result.output)
 
